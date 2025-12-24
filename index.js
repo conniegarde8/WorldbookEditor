@@ -191,6 +191,12 @@ const API = {
 
     // --- 写入/操作类 ---
     async saveBookEntries(name, entriesArray) {
+        // 防御性检查：如果没有名字或数组为空，拒绝保存
+        if (!name || !Array.isArray(entriesArray)) {
+            console.warn("[Worldbook] Save aborted: Invalid name or entries.");
+            return;
+        }
+
         // 加载旧数据以保留未修改的深层字段
         const oldData = await getContext().loadWorldInfo(name) || { entries: {} };
         const newEntriesObj = {};
@@ -200,9 +206,12 @@ const API = {
             // 确保 UID 存在
             const uid = entry.uid;
 
+            // 严格检查 oldData.entries[uid] 是否存在
+            const oldEntry = (oldData.entries && oldData.entries[uid]) ? oldData.entries[uid] : {};
+
             // 合并旧数据（防止插件未支持的字段丢失），覆盖新数据
             newEntriesObj[uid] = {
-                ...oldData.entries[uid], // 保留旧字段
+                ...oldEntry, // 保留旧字段
                 ...entry // 覆盖新字段
             };
         });
@@ -422,19 +431,11 @@ const Actions = {
         // 标记为已初始化
         STATE.isInitialized = true;
 
-        // 执行初始数据预加载
+        // 执行初始数据预加载 (仅刷新绑定关系列表，这是安全的，不加载具体条目)
         await this.refreshAllContext();
 
-        // 默认加载逻辑
-        let defaultBook = STATE.bindings.char.primary;
-        if (!defaultBook && STATE.bindings.global.length > 0) defaultBook = STATE.bindings.global[0];
-        if (!defaultBook && STATE.allBookNames.length > 0) defaultBook = STATE.allBookNames[0];
-
-        if (defaultBook) {
-            await this.loadBook(defaultBook);
-        }
-
-        console.log("[Worldbook Editor] Initialization and Pre-loading complete.");
+        // 移除自动预加载逻辑，改为 Lazy Load，防止后台持有数据导致错乱
+        console.log("[Worldbook Editor] Initialization complete (Idle Mode).");
     },
 
     async refreshAllContext() {
@@ -1272,24 +1273,33 @@ const UI = {
         UI.updateHeaderInfo();
 
         // 智能选中逻辑：优先选中角色绑定的主要世界书
-        const charPrimary = STATE.bindings.char.primary;
-        if (charPrimary && STATE.allBookNames.includes(charPrimary)) {
-            // 如果有绑定书且存在，优先加载它
-            STATE.currentBookName = charPrimary;
-            await Actions.loadBook(charPrimary);
-        } else if (STATE.currentBookName) {
-            // 如果之前有选中状态，渲染它
-            UI.renderList();
-        } else {
-            // 否则回退到第一本
-            if (STATE.allBookNames.length > 0) {
-                const firstBook = STATE.allBookNames[0];
-                STATE.currentBookName = firstBook;
-                await Actions.loadBook(firstBook);
-            } else {
-                UI.renderList(); // 渲染空列表
+        // ========== [核心修改] 新增：按需加载逻辑 (Lazy Load) ==========
+        // 只有当当前没有加载书，且面板刚打开时，才尝试自动加载
+        if (!STATE.currentBookName) {
+            const charPrimary = STATE.bindings.char.primary;
+            let targetBook = null;
+
+            if (charPrimary && STATE.allBookNames.includes(charPrimary)) {
+                targetBook = charPrimary;
+            } else if (STATE.allBookNames.length > 0) {
+                targetBook = STATE.allBookNames[0];
             }
+
+            if (targetBook) {
+                // 在 UI 打开的那一刻才加载数据
+                // await 会暂停这里，直到数据加载完成，期间 loading 层会遮挡
+                await Actions.loadBook(targetBook);
+            } else {
+                UI.renderList(); // 没有任何书，渲染空列表
+            }
+        } else {
+            // 如果已有状态（比如关闭后重开），直接渲染内存里的数据
+            UI.renderList();
+            // 同步下拉框显示
+            const selector = document.getElementById('wb-book-selector');
+            if (selector && STATE.currentBookName) selector.value = STATE.currentBookName;
         }
+        // ==========================================================
 
         // 再次更新头部选择器状态，确保 UI 与数据一致
         UI.updateHeaderInfo();
