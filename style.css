@@ -1,0 +1,1497 @@
+/* === 核心：容器样式 === */
+#enhanced-wb-panel-v6 {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    /* 增加不透明度以弥补移除模糊后的视觉效果 */
+    background-color: #FFFFFF;
+    color: #374151;
+    z-index: 20000; display: flex; flex-direction: column;
+    font-family: 'Segoe UI', sans-serif;
+    /* 移除 backdrop-filter 以解决卡顿 */
+    box-sizing: border-box;
+}
+
+#enhanced-wb-panel-v6 *,
+.wb-modal-overlay *,
+.wb-gr-dropdown *,
+.wb-tooltip {
+    box-sizing: border-box;
+}
+
+/* 统一滚动条样式：隐藏横向，美化纵向 */
+#enhanced-wb-panel-v6 ::-webkit-scrollbar,
+.wb-modal-overlay ::-webkit-scrollbar,
+.wb-sort-modal-overlay ::-webkit-scrollbar,
+.wb-gr-dropdown ::-webkit-scrollbar {
+    width: 5px;  /* 纵向滚动条宽度 */
+    height: 0px; /* 强制隐藏底部横向滚动条 */
+}
+
+#enhanced-wb-panel-v6 ::-webkit-scrollbar-track,
+.wb-modal-overlay ::-webkit-scrollbar-track,
+.wb-sort-modal-overlay ::-webkit-scrollbar-track,
+.wb-gr-dropdown ::-webkit-scrollbar-track {
+    background: transparent;
+    border: none;
+}
+
+#enhanced-wb-panel-v6 ::-webkit-scrollbar-thumb,
+.wb-modal-overlay ::-webkit-scrollbar-thumb,
+.wb-sort-modal-overlay ::-webkit-scrollbar-thumb,
+.wb-gr-dropdown ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.07); /* 常态颜色 */
+    border-radius: 10px;       /* 圆角 */
+    border: none;              /* 无边框 */
+}
+
+#enhanced-wb-panel-v6 ::-webkit-scrollbar-thumb:hover,
+.wb-modal-overlay ::-webkit-scrollbar-thumb:hover,
+.wb-sort-modal-overlay ::-webkit-scrollbar-thumb:hover,
+.wb-gr-dropdown ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.15); /* 悬停/拖动颜色 */
+}
+
+#enhanced-wb-panel-v6 .wb-hidden { display: none !important; }
+
+/* === 顶部栏 === */
+#enhanced-wb-panel-v6 .wb-header-bar { height: 50px; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; padding-top: 5px; }
+#enhanced-wb-panel-v6 .wb-header-close { position: absolute; right: 15px; top: 15px; cursor: pointer; color: #9ca3af; font-size: 1.2em; transition: 0.2s; }
+#enhanced-wb-panel-v6 .wb-header-close:hover { color: #4b5563; }
+
+/* 胶囊菜单栏 */
+#enhanced-wb-panel-v6 .wb-tabs {
+    display: inline-flex;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 30px;
+    padding: 3px;
+    gap: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+#enhanced-wb-panel-v6 .wb-tab {
+    padding: 6px 20px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95em;
+    display: flex; align-items: center; gap: 6px;
+}
+#enhanced-wb-panel-v6 .wb-tab:hover { color: #374151; }
+#enhanced-wb-panel-v6 .wb-tab.active {
+    color: #fff;
+    background: RGB(17, 24, 39);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+#enhanced-wb-panel-v6 .wb-tab i { font-size: 0.9em; }
+
+/* === 主内容区 === */
+#enhanced-wb-panel-v6 .wb-content { flex: 1; display: flex; flex-direction: column; padding: 15px; overflow: hidden; max-width: 900px; margin: 0 auto; width: 100%; position: relative; }
+#enhanced-wb-panel-v6 .wb-view-section { flex: 1; display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; }
+
+/* === 视图 1: 编辑器 === */
+#enhanced-wb-panel-v6 .wb-book-bar { margin-bottom: 5px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; width: 100%; justify-content: space-between; }
+#enhanced-wb-panel-v6 .wb-stat-line { display: flex; justify-content: flex-end; margin-bottom: 10px; padding-right: 5px; }
+#enhanced-wb-panel-v6 #wb-trigger-wb-book-selector { flex: 1; }
+#enhanced-wb-panel-v6 .wb-row .wb-gr-trigger { flex: 1; min-width: 0; }
+#enhanced-wb-panel-v6 .wb-tool-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+/* 增加 padding-bottom: 40px 防止底部遮挡 */
+#enhanced-wb-panel-v6 .wb-list { flex: 1; overflow-y: auto; padding-right: 5px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+
+/* 编辑器控件 */
+#enhanced-wb-panel-v6 .wb-input-dark,
+#enhanced-wb-panel-v6 input[type="text"],
+#enhanced-wb-panel-v6 input[type="number"],
+#enhanced-wb-panel-v6 input:not([type]),
+#enhanced-wb-panel-v6 textarea,
+div#wb-active-dropdown input.wb-gr-search-input {
+    background-color: #fafafa !important;
+    border: 1.5px solid #f5f5f5 !important;
+    color: #333 !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    outline: none !important;
+    transition: border-color 0.2s ease, background-color 0.2s ease !important;
+    font-size: 0.9em !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    line-height: 1.5 !important;
+    appearance: none !important;
+    background-image: none !important;
+}
+
+.wb-content-popup input,
+.wb-content-popup textarea,
+#enhanced-wb-panel-v6 .wb-inp-num {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #1f2937 !important;
+}
+.wb-content-popup input:focus,
+.wb-content-popup textarea:focus,
+#enhanced-wb-panel-v6 .wb-inp-num:focus {
+    border-color: #42a5f5 !important;
+    background-color: #ffffff !important;
+}
+
+#enhanced-wb-panel-v6 .wb-pos-wrapper { width: 140px; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+#enhanced-wb-panel-v6 .wb-input-dark:hover,
+#enhanced-wb-panel-v6 input[type="text"]:hover,
+#enhanced-wb-panel-v6 input[type="number"]:hover,
+#enhanced-wb-panel-v6 input:not([type]):hover,
+#enhanced-wb-panel-v6 textarea:hover,
+div#wb-active-dropdown input.wb-gr-search-input:hover { border-color: #64b5f6 !important; }
+#enhanced-wb-panel-v6 .wb-input-dark:focus,
+#enhanced-wb-panel-v6 input[type="text"]:focus,
+#enhanced-wb-panel-v6 input[type="number"]:focus,
+#enhanced-wb-panel-v6 input:not([type]):focus,
+#enhanced-wb-panel-v6 textarea:focus,
+div#wb-active-dropdown input.wb-gr-search-input:focus {
+    background-color: #ffffff !important;
+    border-color: #42a5f5 !important;
+    box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2) !important;
+}
+
+#enhanced-wb-panel-v6 #wb-bind-char-primary, #enhanced-wb-panel-v6 #wb-bind-chat { color: #1565c0 !important; font-weight: 600; }
+
+#enhanced-wb-panel-v6 .wb-btn-circle { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #fafafa; background: #fafafa; color: #4b5563; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+/* 需求6: 悬停改为纯黑色背景 */
+#enhanced-wb-panel-v6 .wb-btn-circle:hover { background: #000000; color: #ffffff; border-color: #000000; }
+
+/* 需求2: 编辑/删除按钮样式 */
+#enhanced-wb-panel-v6 .btn-preview,
+#enhanced-wb-panel-v6 .btn-delete {
+    color: #6b7280; /* 默认灰色 */
+    transition: color 0.2s;
+}
+#enhanced-wb-panel-v6 .btn-preview:hover {
+    color: #000000 !important; /* 眼睛悬停纯黑 */
+}
+#enhanced-wb-panel-v6 .btn-delete:hover {
+    color: #ef4444 !important; /* 垃圾桶悬停红色 */
+}
+#enhanced-wb-panel-v6 .wb-btn-circle.danger:hover { background: #ef4444; border-color: #ef4444; }
+
+/* 菜单 */
+#enhanced-wb-panel-v6 .wb-menu-wrapper { position: relative; }
+.wb-menu-dropdown {
+    position: absolute; top: 100%; right: 0; margin-top: 5px;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
+    min-width: 140px; display: none; flex-direction: column; overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    /* 修改：让宽度适应内容，防止换行 */
+    width: max-content;
+}
+.wb-menu-dropdown.show { display: flex; }
+.wb-menu-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #374151; font-size: 0.9em; transition: background 0.2s; }
+.wb-menu-item:hover { background: #000000; color: #ffffff; }
+.wb-menu-item i { width: 16px; text-align: center; }
+.wb-menu-item.danger { color: #ef4444; border-top: 1px solid #f3f4f6; }
+.wb-menu-item.danger:hover { background: #fef2f2; }
+
+/* 绑定管理 */
+#enhanced-wb-panel-v6 #wb-view-binding { overflow-y: auto; padding-bottom: 80px; display: block; }
+#enhanced-wb-panel-v6 .wb-bind-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 5px; }
+
+#enhanced-wb-panel-v6 .wb-bind-card {
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;
+    padding: 15px; display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); height: fit-content; max-height: 60vh;
+}
+#enhanced-wb-panel-v6 .wb-bind-title {
+    color: #111827; font-size: 1.1em; font-weight: bold; padding-bottom: 8px;
+    border-bottom: 2px solid RGB(17, 24, 39); margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+#enhanced-wb-panel-v6 .wb-bind-subtitle { font-size: 0.8em; color: #6b7280; font-weight: normal; }
+#enhanced-wb-panel-v6 .wb-bind-label { font-size: 0.9em; color: #4b5563; margin-top: 5px; font-weight: 600; }
+#enhanced-wb-panel-v6 .wb-scroll-list {
+    flex: 1; overflow-y: auto; background: #f9fafb;
+    border: 1px solid #e5e7eb; border-radius: 8px; padding: 5px; min-height: 150px;
+}
+#enhanced-wb-panel-v6 .wb-check-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; margin-bottom: 2px; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; color: #374151; }
+#enhanced-wb-panel-v6 .wb-check-item:hover { background: #f3f4f6; }
+#enhanced-wb-panel-v6 .wb-check-item.checked { background: rgba(124, 92, 189, 0.1); border-color: #7c5cbd; color: #4c1d95; font-weight: 500; }
+#enhanced-wb-panel-v6 .wb-check-item input { display: none; }
+#enhanced-wb-panel-v6 .wb-check-item::before { content: ''; display: inline-block; width: 16px; height: 16px; border: 2px solid #9ca3af; border-radius: 4px; transition: 0.2s; flex-shrink: 0; background: #fff; }
+#enhanced-wb-panel-v6 .wb-check-item.checked::before { background-color: #7c5cbd; border-color: #7c5cbd; box-shadow: inset 0 0 0 2px #fff; }
+
+/* 多选组件 */
+#enhanced-wb-panel-v6 .wb-multi-select { position: relative; width: 100%; font-size: 0.9em; }
+#enhanced-wb-panel-v6 .wb-ms-tags {
+    background: #fafafa; border-radius: 8px;
+    min-height: 42px; padding: 6px; display: flex; flex-wrap: wrap; gap: 5px;
+    cursor: pointer; transition: border-color 0.2s ease;
+}
+#enhanced-wb-panel-v6 .wb-ms-tags:hover { border-color: #64b5f6; }
+#enhanced-wb-panel-v6 .wb-ms-placeholder { color: #9ca3af; padding: 5px; font-style: italic; }
+#enhanced-wb-panel-v6 .wb-ms-tag {
+    background: rgba(124, 92, 189, 0.1);
+    color: #5b21b6; padding: 2px 6px; border-radius: 4px;
+    display: flex; align-items: center; gap: 6px; user-select: none;
+}
+#enhanced-wb-panel-v6 .wb-ms-tag-close { cursor: pointer; color: #6b7280; font-weight: bold; font-family: monospace; }
+#enhanced-wb-panel-v6 .wb-ms-tag-close:hover { color: #ef4444; }
+/* 统一多选下拉框容器 - Light Mode */
+.wb-ms-dropdown {
+    position: absolute; top: 100%; left: 0; width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0; /* 浅灰边框 */
+    border-radius: 12px;       /* 大圆角 */
+    z-index: 2147483647;       /* 确保层级最高 */
+    margin-top: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    animation: wbSlideDown 0.2s ease-out; /* 统一动画 */
+}
+.wb-ms-dropdown.show { display: flex; }
+.wb-ms-search { padding: 8px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }
+.wb-ms-search input {
+    width: 100%; background: #fafafa; border: 1.5px solid #f5f5f5;
+    color: #333; padding: 8px 12px; border-radius: 8px; outline: none;
+    transition: border-color 0.2s;
+}
+.wb-ms-search input:hover { border-color: #64b5f6; }
+.wb-ms-search input:focus { background: #fff; border-color: #42a5f5; }
+.wb-ms-list { max-height: 200px; overflow-y: auto; }
+/* 统一多选选项样式 - Light Mode */
+.wb-ms-item {
+    padding: 8px 12px;
+    margin: 2px 4px; /* 修改：增加左右外边距，避免贴边 */
+    cursor: pointer;
+    color: #2c3e50; /* 深蓝灰 */
+    font-size: 0.9em;
+    position: relative;
+    border-left: 4px solid transparent; /* 预留边框位置 */
+    border-radius: 6px; /* 新增：圆角 */
+    transition: all 0.1s;
+    /* 强制不换行，超出显示省略号，配合隐藏底部滚动条 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 统一悬停效果：浅蓝背景 + 深蓝文字 + 左侧蓝条 */
+.wb-ms-item:hover {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+    border-left-color: #3b82f6 !important;
+    padding-left: 12px !important;
+    background-image: none !important; /* 防止被全局样式覆盖 */
+}
+
+/* 隐藏状态 */
+.wb-ms-item.hidden { display: none; }
+.wb-btn-rect {
+    background: #000000; color: white; border: none;
+    padding: 10px 40px; border-radius: 20px;
+    cursor: pointer; font-weight: bold; font-size: 1.1em;
+    box-shadow: 0 4px 6px rgba(124, 92, 189, 0.3); transition: 0.2s;
+}
+.wb-btn-rect:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(124, 92, 189, 0.4); }
+
+/* 管理视图 */
+#enhanced-wb-panel-v6 .wb-manage-container { display: flex; flex-direction: column; height: 100%; overflow: hidden; gap: 10px; }
+#enhanced-wb-panel-v6 .wb-manage-content { flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px; }
+#enhanced-wb-panel-v6 .wb-group-header {
+    background: #f3f4f6; padding: 10px 15px; border-radius: 6px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; border: 1px solid #e5e7eb;
+    user-select: none; transition: background 0.2s;
+}
+#enhanced-wb-panel-v6 .wb-group-header:hover { background: #e5e7eb; }
+#enhanced-wb-panel-v6 .wb-group-title { font-weight: bold; color: #1f2937; }
+#enhanced-wb-panel-v6 .wb-group-title.system { color: #6b7280; font-style: italic; font-weight: normal; }
+#enhanced-wb-panel-v6 .wb-group-count { color: #9ca3af; font-size: 0.9em; margin-right: 10px; }
+#enhanced-wb-panel-v6 .wb-group-arrow { transition: transform 0.2s; color: #6b7280; }
+#enhanced-wb-panel-v6 .wb-group-header.expanded .wb-group-arrow { transform: rotate(90deg); }
+#enhanced-wb-panel-v6 .wb-group-body { display: none; flex-direction: column; gap: 8px; padding: 5px 0 10px 10px; border-left: 2px solid #e5e7eb; margin-left: 10px; }
+#enhanced-wb-panel-v6 .wb-group-body.show { display: flex; }
+#enhanced-wb-panel-v6 .wb-manage-card {
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+#enhanced-wb-panel-v6 .wb-card-top { display: flex; justify-content: space-between; align-items: center; }
+#enhanced-wb-panel-v6 .wb-card-title { font-weight: bold; color: RGB(17, 24, 39); font-size: 0.95em; }
+#enhanced-wb-panel-v6 .wb-manage-select { background: #fff; border: 1px solid #d1d5db; color: #374151; padding: 2px 5px; border-radius: 4px; font-size: 0.85em; max-width: 120px; }
+#enhanced-wb-panel-v6 .wb-icon-btn { width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9ca3af; transition: 0.2s; }
+#enhanced-wb-panel-v6 .wb-icon-btn:hover { background: #f3f4f6; color: #7c5cbd; }
+#enhanced-wb-panel-v6 .wb-icon-btn.active { color: #7c5cbd; }
+#enhanced-wb-panel-v6 .wb-manage-note {
+    width: 100%; background: #f9fafb; border: 1px solid #e5e7eb;
+    color: #4b5563; padding: 8px; border-radius: 4px; font-size: 0.85em;
+    resize: vertical; min-height: 60px; margin-top: 5px; display: none;
+}
+#enhanced-wb-panel-v6 .wb-manage-note:focus { border-color: #d1d5db; background: #fff; color: #1f2937; }
+#enhanced-wb-panel-v6 .wb-manage-note.show { display: block; }
+#enhanced-wb-panel-v6 .wb-card-subtitle { font-size: 0.8em; color: #6b7280; font-style: italic; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+#enhanced-wb-panel-v6 .wb-pinned-icon { color: #f59e0b; transform: rotate(-45deg); display: inline-block; }
+#enhanced-wb-panel-v6 .wb-manage-icons { display: flex; align-items: center; gap: 5px; }
+#enhanced-wb-panel-v6 .wb-icon-action { width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9ca3af; transition: all 0.2s; }
+#enhanced-wb-panel-v6 .wb-icon-action:hover { background: #f3f4f6; color: #7c5cbd; transform: scale(1.1); }
+#enhanced-wb-panel-v6 .wb-icon-action.link-bound { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+#enhanced-wb-panel-v6 .wb-icon-action.link-bound:hover { background: #ef4444; color: #fff; }
+#enhanced-wb-panel-v6 .wb-icon-action.link-unbound { color: #d1d5db; }
+#enhanced-wb-panel-v6 .wb-icon-action.link-unbound:hover { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+#enhanced-wb-panel-v6 .wb-icon-action.btn-pin { color: #d1d5db; }
+#enhanced-wb-panel-v6 .wb-icon-action.btn-pin.pinned { color: #f59e0b; }
+#enhanced-wb-panel-v6 .wb-icon-action.btn-del:hover { background: #fee2e2; color: #ef4444; }
+#enhanced-wb-panel-v6 .wb-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+#enhanced-wb-panel-v6 .wb-card-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* 卡片样式 */
+#enhanced-wb-panel-v6 .wb-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+#enhanced-wb-panel-v6 .wb-card.selected { border-color: #7c5cbd; box-shadow: 0 0 0 1px #7c5cbd; }
+#enhanced-wb-panel-v6 .wb-card-header { display: flex; padding: 10px; gap: 10px; background: #fff; }
+#enhanced-wb-panel-v6 .wb-expand-area { background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 15px; display: none; }
+#enhanced-wb-panel-v6 .wb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } /* 需求4: 允许换行 */
+#enhanced-wb-panel-v6 .wb-ctrl-group { display: flex; align-items: center; gap: 6px; font-size: 0.9em; color: #6b7280; }
+#enhanced-wb-panel-v6 .wb-ctrl-group span { width: auto; white-space: nowrap; } /* 需求5: 防止文字换行 */
+#enhanced-wb-panel-v6 .wb-inp-title { flex: 1; background: transparent; border: 1px solid transparent; color: #111827; padding: 8px; font-weight: bold; border-radius: 4px; transition: 0.2s; min-width: 150px; }
+
+/* --- 需求1: Token 颜色逻辑 (配合 JS 中的 .type-green/.type-blue) --- */
+
+/* 默认基础样式 (保持尺寸和排版) */
+#enhanced-wb-panel-v6 .wb-token-display {
+    width: auto !important;
+    min-width: 40px;
+    text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85em;
+    margin-left: auto !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 4px 10px !important;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+/* 绿灯样式 (普通启用) */
+#enhanced-wb-panel-v6 .wb-card.type-green .wb-token-display {
+    background-color: #dcfce7 !important; /* 浅绿背景 */
+    color: #166534 !important;            /* 深绿文字 */
+}
+
+/* 蓝灯样式 (常驻) */
+#enhanced-wb-panel-v6 .wb-card.type-blue .wb-token-display {
+    background-color: #dbeafe !important; /* 浅蓝背景 */
+    color: #1e40af !important;            /* 深蓝文字 */
+}
+
+/* 禁用样式 (覆盖上面的颜色) */
+#enhanced-wb-panel-v6 .wb-card.disabled .wb-token-display {
+    background-color: #f3f4f6 !important;
+    color: #9ca3af !important;
+}
+#enhanced-wb-panel-v6 .wb-card.disabled input.wb-inp-title {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
+#enhanced-wb-panel-v6 .wb-card .wb-gr-trigger::after { display: none !important; }
+#enhanced-wb-panel-v6 .wb-card .wb-gr-trigger { padding-right: 8px !important; }
+#enhanced-wb-panel-v6 .wb-inp-title:hover, #enhanced-wb-panel-v6 .wb-inp-title:focus { background: #f3f4f6; border-color: #e5e7eb; }
+#enhanced-wb-panel-v6 .wb-inp-num { background: #fff; border: 1px solid #d1d5db; color: #374151; width: 60px; text-align: center; padding: 4px; border-radius: 4px; }
+
+/* 开关样式 */
+#enhanced-wb-panel-v6 .wb-switch { position: relative; width: 36px; height: 20px; display: inline-block; }
+#enhanced-wb-panel-v6 .wb-switch input { opacity: 0; width: 0; height: 0; }
+#enhanced-wb-panel-v6 .wb-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: .3s; border-radius: 20px; }
+#enhanced-wb-panel-v6 .wb-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+#enhanced-wb-panel-v6 input:checked + .wb-slider.purple { background-color: #000000; }
+#enhanced-wb-panel-v6 input:checked + .wb-slider.blue { background-color: #3b82f6; }
+#enhanced-wb-panel-v6 input:not(:checked) + .wb-slider.blue { background-color: #22c55e; }
+#enhanced-wb-panel-v6 input:checked + .wb-slider:before { transform: translateX(16px); }
+
+/* 统一修改以下两个遮罩层类 */
+.wb-sort-modal-overlay,
+.wb-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* 核心修改：从 100% 改为 100vw/vh */
+    width: 100vw;
+    height: 100vh;
+    /* 建议：稍微提高 z-index 以匹配 regex.js 的层级 (它用了 100000) */
+    z-index: 100000; 
+    
+    background: rgba(0,0,0,0.4); 
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    font-family: 'Segoe UI', sans-serif;
+    
+    /* 保持 flex 仅仅是为了让 JS 未介入前不至于乱跑，或者作为 fallback */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+.wb-sort-modal {
+    position: fixed;
+    /* 初始位置设为不可见或默认居中，等待JS调整 */
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    width: 600px; max-width: 90vw;
+    /* 移除 CSS 中的 max-height，由 JS 动态计算接管 */
+    /* max-height: 80vh; */
+    border-radius: 12px;
+    /* 关键布局属性 */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    overflow: hidden; /* 防止圆角溢出 */
+    z-index: 21001;
+    color: #374151;
+    margin: 0;
+}
+.wb-sort-footer {
+    padding: 10px; border-top: 1px solid #e5e7eb;
+    text-align: center; background: #fff; flex-shrink: 0;
+}
+.wb-sort-header {
+    padding: 15px; font-weight: bold; border-bottom: 1px solid #e5e7eb;
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f9fafb;
+}
+.wb-sort-body {
+    flex: 1 1 auto; /* 允许伸缩 */
+    min-height: 0;  /* 允许内容压缩，触发滚动 */
+    overflow-y: auto !important;
+    padding: 15px;
+    background: #f3f4f6;
+    flex-direction: column;
+    gap: 10px;
+    scroll-behavior: smooth;
+    padding-bottom: 20px;
+}
+.wb-sort-group-container {
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1);
+}
+.wb-sort-group-title {
+    padding: 10px 15px; font-size: 0.95em; font-weight: bold;
+    color: rgba(0,0,0,0.8); background: rgba(255,255,255,0.6);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer; /* 提示可点击 */
+    display: flex; justify-content: space-between; align-items: center;
+    user-select: none;
+    transition: background 0.2s;
+}
+.wb-sort-group-title:hover {
+    background: rgba(255,255,255,0.9);
+}
+.wb-sort-group-list {
+    padding: 8px; display: flex; flex-direction: column; gap: 6px; min-height: 10px;
+}
+.wb-sort-item {
+    background: #fff; padding: 8px 12px; border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.1); font-size: 0.9em;
+    cursor: grab; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.wb-sort-item:active { cursor: grabbing; }
+.wb-sort-item.dragging { opacity: 0.5; background: #fffbe6; }
+.wb-sort-item-order {
+    background: #e5e7eb; color: #374151; font-size: 0.8em;
+    padding: 2px 6px; border-radius: 4px; font-weight: bold; min-width: 24px; text-align: center;
+}
+
+/* 下拉框 */
+.wb-gr-hidden-select { opacity: 0; pointer-events: none; position: absolute; z-index: -1; }
+#enhanced-wb-panel-v6 .wb-gr-trigger {
+	background-color: #fafafa; */
+    border: 1.5px solid #f5f5f5;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.9em;
+    transition: all 0.2s;
+    min-height: 38px;
+}
+#enhanced-wb-panel-v6 .wb-gr-trigger:hover { border-color: #64b5f6; }
+#enhanced-wb-panel-v6 .wb-gr-trigger::after {
+    content: ''; width: 16px; height: 16px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378909c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: center;
+}
+.wb-gr-dropdown {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 2147483647;
+    display: none;
+    overflow: hidden;
+    flex-direction: column;
+    animation: wbSlideDown 0.2s ease-out;
+    font-family: 'Segoe UI', sans-serif;
+}
+.wb-gr-dropdown.show { display: flex; }
+@keyframes wbSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.wb-gr-search-box {
+    padding: 8px;
+    position: sticky; top: 0;
+    background: linear-gradient(to bottom, #ffffff 90%, rgba(255, 255, 255, 0));
+    z-index: 1;
+}
+.wb-gr-search-input {
+    width: 100%; padding: 8px 12px; border: 1.5px solid #f5f5f5;
+    border-radius: 8px; outline: none; background-color: #fafafa; color: #333;
+    font-size: 0.9em;
+}
+.wb-gr-search-input:focus { background-color: #ffffff; border-color: #42a5f5; }
+.wb-gr-options-container {
+    overflow-y: auto;
+    overflow-x: hidden; /* 强制隐藏底部滚动条 */
+    max-height: 300px;
+    padding: 4px 0;
+}
+.wb-gr-group-label { padding: 8px 12px 4px 12px; font-size: 0.8em; font-weight: 700; color: #78909c; text-transform: uppercase; }
+.wb-gr-option {
+    padding: 8px 12px;
+    margin: 2px 4px; /* 修改：增加左右外边距 */
+    color: #2c3e50;
+    cursor: pointer;
+    position: relative;
+    font-size: 0.9em;
+    border-left: 4px solid transparent; /* 预留边框位置防止跳动 */
+    border-radius: 6px; /* 新增：圆角 */
+    transition: all 0.1s;
+    /* 强制不换行 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.wb-gr-option:hover { background-color: #f8fbff; color: #1976d2; transform: translateX(2px); }
+.wb-gr-option.selected { background-color: #e3f2fd; color: #1565c0; font-weight: 600; }
+.wb-gr-option.hidden { display: none; }
+
+.wb-content-popup {
+    /* 从 fixed 改为 relative，配合父容器 Flexbox 实现自适应居中 */
+    position: relative !important;
+    /* 修改宽度逻辑与 wb-content 一致 */
+    width: 100% !important; max-width: 900px !important;
+
+    /* 恢复固定高度比例，确保弹窗足够大 */
+    height: 80vh !important;
+    /* 仍然保留 max-height 以防在极端扁平屏幕下溢出 */
+    max-height: 90vh !important;
+
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb; border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    z-index: 20101;
+    display: flex; flex-direction: column; gap: 10px; padding: 15px;
+    /* animation: wbFadeIn 0.2s ease-out; [已移除以解决闪烁] */
+    color: #000000 !important; font-family: sans-serif;
+    /* 确保 margin 自动处理，防止贴边 */
+    margin: 20px;
+}
+/* 实施防御性 CSS：使用 ID 前缀 + !important 确保样式不被污染 */
+#wb-content-popup-overlay .wb-popup-textarea {
+    width: 100%; flex: 1; resize: none;
+
+    /* --- 颜色与外观 --- */
+    background-color: #ffffff !important;   /* 背景：纯白 */
+    border: 1px solid rgba(209, 213, 219, 0.5) !important;   /* 边框：浅灰 */
+    color: #374151 !important;              /* 文本：深灰 */
+
+    border-radius: 6px !important; padding: 10px !important;
+    font-size: 0.9em !important;
+    outline: none !important;
+    line-height: 1.5 !important;
+    box-shadow: none !important;
+    -webkit-text-fill-color: #374151 !important; /* 兼容性强制颜色 */
+}
+
+#wb-content-popup-overlay .wb-popup-input-keys {
+    width: 100%;
+
+    /* --- 颜色与外观 --- */
+    background-color: #ffffff !important;   /* 背景：纯白 */
+    border: 1px solid rgba(209, 213, 219, 0.5) !important;   /* 边框：浅灰 */
+    color: #374151 !important;              /* 文本：深灰 */
+
+    border-radius: 6px !important; padding: 8px 10px !important;
+    font-size: 0.9em !important;
+    outline: none !important;
+    margin-bottom: 10px !important;
+    box-shadow: none !important;
+    -webkit-text-fill-color: #374151 !important;
+}
+
+/* 焦点状态增强 */
+#wb-content-popup-overlay .wb-popup-textarea:focus,
+#wb-content-popup-overlay .wb-popup-input-keys:focus {
+    background-color: #ffffff !important;
+    border-color: #42a5f5 !important;
+    color: #1f2937 !important; /* 聚焦时文字略深 */
+}
+@keyframes wbFadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.wb-popup-header {
+    font-weight: bold; color: #000000; padding-bottom: 5px;
+    display: flex; justify-content: center;
+    align-items: center; font-size: 1.1em;
+}
+.wb-popup-close { cursor: pointer; color: #9ca3af; transition: 0.2s; }
+.wb-popup-close:hover { color: #ef4444; }
+
+/* 底部信息 */
+#enhanced-wb-panel-v6 .wb-footer-info {
+    text-align: center; color: #6b7280; font-size: 0.9em; line-height: 1.6;
+    position: absolute; bottom: 60px; left: 0; width: 100%;
+    background: rgba(255, 255, 255, 0.95); z-index: 10;
+}
+#enhanced-wb-panel-v6 .wb-footer-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    vertical-align: middle; margin: 0 5px; object-fit: cover;
+    border: 1px solid #ddd; display: inline-block;
+}
+
+/* 统计 */
+.wb-stats-container { display: flex; flex-direction: column; gap: 30px; padding: 20px; font-family: 'Segoe UI', sans-serif; }
+.wb-stats-row { display: flex; flex-direction: column; gap: 10px; }
+
+/* 标题栏增强 */
+.wb-stats-label { font-size: 1em; font-weight: 700; color: #1f2937; display: flex; justify-content: space-between; align-items: center; }
+.wb-stats-total { font-size: 0.85em; color: #6b7280; font-weight: bold; }
+
+/* 进度条 */
+.wb-progress-bar { width: 100%; height: 28px; background: #f3f4f6; border-radius: 14px; overflow: hidden; display: flex; }
+.wb-bar-seg { height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85em; font-weight: bold; transition: width 0.4s ease; text-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; }
+.wb-bg-blue { background-color: #3b82f6; }
+.wb-bg-green { background-color: #22c55e; }
+.wb-bar-legend { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.85em; color: #6b7280; }
+.wb-legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+.wb-dot-blue { background-color: #3b82f6; }
+.wb-dot-green { background-color: #22c55e; }
+
+/* 饼图区域 */
+.wb-pie-row { display: flex; align-items: center; justify-content: center; gap: 40px; padding: 10px 0; }
+.wb-pie-chart { width: 140px; height: 140px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: background 0.4s; }
+.wb-pie-legend { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+.wb-pie-legend-item { display: flex; align-items: center; font-size: 0.9em; color: #4b5563; }
+.wb-pie-legend-item strong { color: #1f2937; margin-left: 5px; }
+.wb-pie-sub { font-size: 0.85em; color: #9ca3af; margin-top: 5px; padding-left: 5px; }
+
+/* 排行榜列表 (Pill Style) */
+.wb-rank-list {
+    max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    padding-right: 5px; /* 留给滚动条 */
+    padding-bottom: 15px; /* 防止底部条目被遮挡，预留足够呼吸空间 */
+}
+.wb-rank-pill {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: #f8fafc; 
+    padding: 6px 15px; border-radius: 8px;
+    font-size: 0.9em; color: #374151;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.wb-rank-pill:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.03); background-color: #fff; border-color: #e2e8f0; }
+.wb-rank-pill-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px; }
+.wb-rank-pill-val { font-weight: 800; color: #111827; font-family: monospace; font-size: 1.1em; }
+
+/* 弹窗头部图标 */
+.wb-action-icon { cursor: pointer; color: #9ca3af; transition: color 0.2s; padding: 5px; }
+.wb-action-icon:hover { color: #3b82f6; }
+
+/* 上下文弹窗 */
+.wb-ctx-modal { width: 800px; max-width: 95vw; height: 85vh; display: flex; flex-direction: column; }
+.wb-ctx-body { flex: 1; display: flex; overflow: hidden; border-top: 1px solid #e5e7eb; }
+.wb-ctx-sidebar { width: 220px; border-right: 1px solid #e5e7eb; overflow-y: auto; background: #f9fafb; padding: 10px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+.wb-ctx-nav-btn { text-align: left; background: none; border: none; padding: 6px 10px; font-size: 0.85em; cursor: pointer; color: #4b5563; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wb-ctx-nav-btn:hover { background: #e5e7eb; color: #111827; }
+.wb-ctx-nav-btn.blue { border-left: 3px solid #3b82f6; }
+.wb-ctx-nav-btn.green { border-left: 3px solid #22c55e; }
+.wb-ctx-content { flex: 1; overflow-y: auto; padding: 20px; font-family: monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; background: #fff; color: #333; }
+.wb-ctx-separator { color: #9ca3af; font-weight: bold; margin: 15px 0 5px 0; padding-top: 10px; border-top: 1px dashed #e5e7eb; user-select: text; }
+.wb-popup-footer { display: flex; justify-content: center; gap: 20px; padding-top: 6px; }
+.wb-btn-black {
+    background-color: #000000; color: #ffffff; border: none; padding: 8px 30px;
+    border-radius: 20px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; font-size: 1em;
+}
+.wb-btn-black:hover { opacity: 0.8; }
+
+#enhanced-wb-panel-v6 .wb-stat-group { display: flex; gap: 10px; align-items: center; flex-shrink: 0; margin: 0 5px; }
+#enhanced-wb-panel-v6 .wb-stat-item { font-size: 0.8em; color: #6b7280; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+#enhanced-wb-panel-v6 .wb-warning-badge {
+    color: #ef4444; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    padding: 2px 6px; border-radius: 4px; transition: 0.2s;
+}
+#enhanced-wb-panel-v6 .wb-warning-badge:hover { background: #fee2e2; }
+#enhanced-wb-panel-v6 .wb-warning-badge.hidden { display: none; }
+.wb-modal-action-btn { cursor: pointer; color: #9ca3af; transition: 0.2s; margin-right: 10px; }
+.wb-modal-action-btn:hover { color: #7c5cbd; }
+#enhanced-wb-panel-v6 .wb-warning-container { display: flex; align-items: center; }
+.wb-text-blue { color: #3b82f6; font-weight: bold; }
+.wb-text-green { color: #22c55e; font-weight: bold; }
+.wb-ctx-header-right { display: flex; align-items: center; gap: 8px; }
+.wb-ctx-search-wrapper { position: relative; display: flex; align-items: center; }
+.wb-ctx-search-input {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 4px 5px !important;
+    padding-right: 30px !important; /* 留出空间给计数器 */
+    font-size: 0.9em !important;
+    color: #374151 !important;
+    outline: none !important;
+    width: 100%; /* 宽度由父容器 flex 控制 */
+    min-width: 50px;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+.wb-ctx-search-input:focus {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.wb-ctx-nav-arrows { display: flex; gap: 2px; margin-right: 5px; }
+.wb-ctx-arrow-btn {
+    width: 24px; height: 24px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #6b7280;
+    background: #f9fafb; border: 1px solid #e5e7eb;
+    font-size: 0.8em; transition: all 0.2s;
+}
+.wb-ctx-arrow-btn:hover { background: #e5e7eb; color: #374151; }
+.wb-ctx-arrow-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+.wb-search-highlight {
+    background-color: rgba(255, 0, 0, 0.2); color: #b91c1c;
+    border-bottom: 2px solid #ef4444; font-weight: bold; border-radius: 2px;
+}
+.wb-search-highlight.active { background-color: rgba(255, 0, 0, 0.4); box-shadow: 0 0 0 2px #ef4444; }
+.wb-tooltip {
+    position: fixed; background: #ffffff; color: rgba(0,0,0,1);
+    border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;
+    font-size: 0.85em; z-index: 30000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    max-width: 250px; word-wrap: break-word; display: none;
+    font-family: 'Segoe UI', sans-serif;
+}
+.wb-tooltip.show { opacity: 1; display: block; }
+
+.wb-tooltip.blue {
+    color: #1e40af !important; /* 蓝色文字 */
+    border: 1px solid #93c5fd;
+    background: #eff6ff;
+}
+
+.wb-tooltip.green {
+    color: #15803d !important; /* 绿色文字 */
+    border: 1px solid #86efac;
+    background: #f0fdf4;
+}
+
+#enhanced-wb-panel-v6 .wb-manage-settings {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 6px;
+    padding: 15px; margin-top: 10px; display: flex; flex-direction: column; gap: 10px;
+}
+#enhanced-wb-panel-v6 .wb-setting-row { display: flex; justify-content: space-between; align-items: center; }
+#enhanced-wb-panel-v6 .wb-setting-label { font-weight: bold; color: #374151; font-size: 0.95em; }
+#enhanced-wb-panel-v6 .wb-setting-desc { font-size: 0.8em; color: #9ca3af; margin-top: 2px; }
+
+/* === 新增：卡片类型颜色标识 === */
+/* 绿灯 (启用且非且常驻) - 浅绿色边框 */
+#enhanced-wb-panel-v6 .wb-card.type-green {
+    border-left: 5px solid #86efac !important; /* Tailwind green-300 */
+}
+
+/* 蓝灯 (常驻) - 浅蓝色边框 */
+#enhanced-wb-panel-v6 .wb-card.type-blue {
+    border-left: 5px solid #93c5fd !important; /* Tailwind blue-300 */
+}
+
+/* --- 需求2: 下拉菜单悬停样式 --- */
+
+/* 基础选项样式微调，留出一点左边距给边框动画 */
+.wb-gr-option {
+    padding: 8px 12px;
+    margin: 2px 4px; /* 修改：增加左右外边距 */
+    color: #2c3e50;
+    cursor: pointer;
+    position: relative;
+    font-size: 0.9em;
+    border-left: 4px solid transparent; /* 预留边框位置防止跳动 */
+    border-radius: 6px; /* 新增：圆角 */
+    transition: all 0.1s;
+    /* 强制不换行 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 悬停效果：加粗 + 左侧蓝条 + 浅蓝背景 */
+#enhanced-wb-panel-v6 .wb-gr-option:hover {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+    border-left-color: #3b82f6 !important;
+    padding-left: 12px !important;
+    background-image: none !important;
+}
+
+/* --- 需求3: 上下文预览新布局 (新增样式) --- */
+
+.wb-ctx-layout-container {
+    display: flex !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    background-color: #ffffff !important;
+}
+
+/* 左侧侧边栏 */
+.wb-ctx-sidebar-panel {
+    width: 260px !important;
+    background-color: #f9fafb !important;
+    border-right: 1px solid #e5e7eb !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+}
+
+.wb-ctx-sidebar-item {
+    padding: 10px 12px !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+    color: #4b5563 !important;
+    font-size: 0.9em !important;
+    transition: all 0.2s !important;
+    border-left: 3px solid transparent !important; /* 左侧指示条预留 */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.4 !important;
+}
+
+.wb-ctx-sidebar-item:hover {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+.wb-ctx-sidebar-item.active {
+    background-color: #eff6ff !important;
+    color: #2563eb !important;
+    border-left-color: #3b82f6 !important; /* 激活时的左侧蓝条 */
+    font-weight: 600 !important;
+}
+
+/* 右侧主内容区 */
+.wb-ctx-viewer-panel {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 30px 40px !important;
+    scroll-behavior: smooth !important;
+    background-color: #fff !important;
+    position: relative !important;
+}
+
+.wb-ctx-block {
+    margin-bottom: 30px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px dashed #e5e7eb !important;
+}
+
+.wb-ctx-block-title {
+    font-size: 1.1em !important;
+    font-weight: bold !important;
+    color: #9ca3af !important; /* 浅灰色标题，模仿图示 */
+    margin-bottom: 10px !important;
+    font-family: 'Segoe UI', sans-serif !important;
+}
+
+.wb-ctx-block-content {
+    font-size: 1em !important;
+    line-height: 1.6 !important;
+    color: #374151 !important;
+    white-space: pre-wrap !important;
+    font-family: 'Segoe UI', sans-serif !important;
+}
+
+/* === 上下文预览新样式 (修复布局与侧边栏) === */
+
+.wb-ctx-layout-container {
+    display: flex !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    background-color: #ffffff !important;
+}
+
+/* 左侧侧边栏容器 */
+.wb-ctx-sidebar-panel {
+    width: 280px !important; /*稍微加宽以容纳新设计*/
+    background-color: #fcfcfc !important; /* 极淡的灰背景 */
+    border-right: 1px solid #f0f0f0 !important;
+    overflow-y: auto !important;
+    padding: 20px 10px !important; /* 增加上下内边距 */
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important; /* 条目间距 */
+    flex-shrink: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; /* 添加过渡动画 */
+}
+
+.wb-ctx-sidebar-panel.collapsed {
+    width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+    opacity: 0 !important;
+}
+
+/* 单个侧边栏条目 */
+.wb-ctx-sidebar-item {
+    display: flex !important;
+    align-items: stretch !important;
+    padding: 8px 10px !important;
+    cursor: pointer !important;
+    border-radius: 6px !important;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    border: 1px solid transparent !important;
+    min-height: 40px;
+    margin-bottom: 4px;
+}
+
+/* --- 绿灯条目 (Green) --- */
+.wb-ctx-sidebar-item.type-green {
+    background-color: #f0fdf4 !important; /* 浅绿背景 */
+    color: #166534 !important; /* 深绿文字 */
+}
+/* 绿灯悬停：更深的绿背景 + 位移 */
+.wb-ctx-sidebar-item.type-green:hover {
+    background-color: #dcfce7 !important;
+    transform: translateX(5px);
+}
+/* 绿灯激活：高亮绿背景 + 绿色边框 */
+.wb-ctx-sidebar-item.type-green.active {
+    background-color: #bbf7d0 !important;
+    border-color: #16a34a !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* --- 蓝灯条目 (Blue) --- */
+.wb-ctx-sidebar-item.type-blue {
+    background-color: #eff6ff !important; /* 浅蓝背景 */
+    color: #1e40af !important; /* 深蓝文字 */
+}
+/* 蓝灯悬停：更深的蓝背景 + 位移 */
+.wb-ctx-sidebar-item.type-blue:hover {
+    background-color: #dbeafe !important;
+    transform: translateX(5px);
+}
+/* 蓝灯激活：高亮蓝背景 + 蓝色边框 */
+.wb-ctx-sidebar-item.type-blue.active {
+    background-color: #bfdbfe !important;
+    border-color: #2563eb !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 需求4：悬停时标题加粗 */
+.wb-ctx-sidebar-item:hover .wb-ctx-name {
+    font-weight: bold !important;
+}
+
+/* 独立的左侧色条 (模仿图片) */
+.wb-ctx-bar {
+    width: 4px !important;
+    border-radius: 4px !important;
+    margin-right: 12px !important; /* 色条和文字的距离 */
+    flex-shrink: 0 !important;
+}
+
+/* 文字信息容器 */
+.wb-ctx-info {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+/* 标题样式 */
+.wb-ctx-name {
+    color: inherit !important; /* 跟随父级颜色 */
+    font-size: 0.9em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.5 !important;
+    transition: font-weight 0.1s;
+}
+
+/* 右侧查看器 */
+.wb-ctx-viewer-panel {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 30px 50px !important;
+    scroll-behavior: smooth !important;
+    background-color: #fff !important;
+    position: relative !important;
+}
+
+.wb-ctx-block {
+    margin-bottom: 40px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px dashed #f0f0f0 !important;
+}
+
+.wb-ctx-block-title {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    color: #374151 !important;
+    margin-bottom: 15px !important;
+    display: flex; align-items: baseline;
+}
+
+.wb-ctx-block-idx {
+    color: #d1d5db; margin-right: 10px; font-size: 0.8em; font-family: monospace;
+}
+
+/* 搜索框容器 */
+.wb-ctx-search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 15px;
+    background: #f9fafb;
+    padding: 4px 10px;
+    border-radius: 20px; /* 更圆润 */
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+/* 需求2：容器聚焦时边框变黑 */
+.wb-ctx-search-container:focus-within {
+    border-color: #000000 !important;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.wb-ctx-search-container .wb-ctx-search-input {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important; /* 确保无阴影 */
+    font-size: 0.9em !important;
+    width: 160px;
+    color: #374151 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+/* 导航控件 (箭头和计数) */
+.wb-ctx-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    border-left: 1px solid #d1d5db;
+    padding-left: 8px;
+    opacity: 0; /* 默认隐藏，有输入时显示 */
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.wb-ctx-nav-controls.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.wb-ctx-nav-info {
+    font-size: 0.8em;
+    color: #6b7280;
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: center;
+    user-select: none;
+}
+.wb-ctx-nav-btn {
+    cursor: pointer;
+    padding: 2px 4px;
+    color: #6b7280;
+    border-radius: 3px;
+}
+.wb-ctx-nav-btn:hover { background: #e5e7eb; color: #111827; }
+
+/* 搜索高亮样式 */
+.wb-search-highlight {
+    color: #dc2626;
+    font-weight: bold;
+    background-color: rgba(254, 202, 202, 0.4);
+    border-radius: 2px;
+    padding: 0 1px;
+}
+/* 当前选中的高亮 */
+.wb-search-highlight.active {
+    background-color: #fca5a5;
+    outline: 2px solid #ef4444;
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+}
+
+/* 隐藏被筛选掉的条目 */
+.wb-ctx-sidebar-item.filtered-out,
+.wb-ctx-block.filtered-out {
+    display: none !important;
+}
+
+/* === 新增需求样式 === */
+
+/* 修改：条目禁用时，类型开关（蓝/绿灯）半透明，启用开关保持默认灰色 */
+#enhanced-wb-panel-v6 .wb-card.disabled .inp-type + .wb-slider {
+    opacity: 0.5;
+}
+
+/* 需求4: 警告弹窗样式 */
+.wb-warning-alert-box {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+.wb-warning-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.wb-warning-header-red {
+    color: #dc2626;
+    font-weight: bold;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* === 移动端适配补丁 === */
+
+/* 1. 保护关闭按钮和左侧图标不被挤压 */
+.wb-sort-header .wb-close-btn,
+.wb-sort-header .wb-close-modal,
+.wb-sort-header i.fa-align-left {
+    flex-shrink: 0;
+}
+
+/* 2. 搜索框容器弹性调整 */
+.wb-ctx-search-container {
+    flex: 1; /* 占据剩余空间 */
+    min-width: 0; /* 允许压缩 */
+    max-width: 300px; /* 限制最大宽度 */
+    margin: 0 10px; /* 保持间距 */
+}
+
+/* 3. 移动端隐藏标题文字，只保留图标 */
+@media (max-width: 600px) {
+    /* [修正] 仅隐藏上下文预览的特定标题，不影响分析弹窗 */
+    .wb-ctx-header-title-text {
+        display: none;
+    }
+
+    /* 调整头部内边距 */
+    .wb-sort-header {
+        padding: 10px 5px !important;
+    }
+
+    /* 调整搜索框在移动端的显示 */
+    .wb-ctx-search-container {
+        margin: 0 5px;
+    }
+}
+
+/* 分组折叠动画样式 */
+.wb-sort-group-list {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+/* 折叠状态 */
+.wb-sort-group-list.collapsed {
+    display: none;
+}
+/* 折叠箭头旋转 */
+.wb-sort-arrow {
+    transition: transform 0.2s;
+    color: #6b7280;
+}
+.wb-sort-group-title.collapsed .wb-sort-arrow {
+    transform: rotate(-90deg);
+}
+
+/* --- 修复布局对齐与移动端显示 --- */
+
+/* 1. 锁定位置选择器容器的宽度 */
+/* 这里的 170px 是为了容纳 "角色定义之前" 这样较长的文本，同时保证 @D + 输入框 有足够空间 */
+#enhanced-wb-panel-v6 .wb-pos-wrapper {
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0; /* 禁止容器本身被压缩 */
+}
+
+/* 2. 强制控制行不换行，确保 Token 在同一行 */
+#enhanced-wb-panel-v6 .wb-card-header .wb-row:nth-child(2) {
+    flex-wrap: nowrap !important; /* 禁止换行 */
+    overflow-x: auto; /* 极端小屏幕下允许横向滚动，防止溢出界面 */
+    padding-bottom: 2px; /* 滚动条预留 */
+}
+/* 隐藏滚动条，保持美观 */
+#enhanced-wb-panel-v6 .wb-card-header .wb-row:nth-child(2)::-webkit-scrollbar {
+    display: none;
+}
+
+/* 3. 优化 Token 显示块的对齐 */
+#enhanced-wb-panel-v6 .wb-token-display {
+    margin-left: auto !important; /* 强制靠右 */
+    white-space: nowrap;
+    flex-shrink: 0; /* 禁止被压缩 */
+}
+
+/* 4. 优化顺序输入框组 */
+#enhanced-wb-panel-v6 .wb-ctrl-group.order-group {
+    flex-shrink: 0; /* 禁止被压缩 */
+    white-space: nowrap;
+}
+
+/* 深度输入框 */
+#enhanced-wb-panel-v6 .inp-pos-depth {
+    /* 默认隐藏，JS 控制显示 */
+    /* 当显示时，我们希望它占一部分固定宽度 */
+    width: 55px !important;
+    text-align: center;
+    padding: 4px !important;
+    flex-shrink: 0;
+}
+
+/* 核心布局修复：强制一行显示 */
+#enhanced-wb-panel-v6 .wb-card-header .wb-row:nth-child(2) {
+    flex-wrap: nowrap !important; /* 禁止换行 */
+    gap: 5px !important; /* 缩小间距以适应移动端 */
+    overflow: visible !important; /* 允许下拉菜单溢出 */
+    width: 100%;
+    padding-right: 2px;
+}
+
+/* 位置选择器容器：固定宽度 (6个汉字宽度 + 箭头余量) */
+#enhanced-wb-panel-v6 .wb-pos-wrapper {
+    position: relative !important; /* 为绝对定位子元素提供基准 */
+    width: 110px !important;      /* 核心：固定宽度 */
+    min-width: 110px !important;
+    max-width: 110px !important;
+    height: 38px;                 /* 固定高度与输入框一致 */
+    display: flex;
+    align-items: center;
+    flex-shrink: 0 !important;    /* 禁止被压缩 */
+    margin: 0 !important;
+}
+
+/* 触发器文本：强制单行省略，防止撑开 */
+#enhanced-wb-panel-v6 .wb-pos-wrapper .wb-gr-trigger {
+    width: 100% !important;       /* 占满容器 */
+    padding-right: 5px !important; /* 减小右边距 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;      /* 超出显示省略号 */
+}
+
+/* 深度输入框：嵌入式绝对定位 */
+#enhanced-wb-panel-v6 .inp-pos-depth {
+    position: absolute !important; /* 核心：脱离文档流，不占空间 */
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 50px !important;        /* 固定小宽度 */
+    height: 38px !important;       /* 高度填满 */
+    margin: 0 !important;
+    z-index: 10 !important;        /* 浮在触发器之上 */
+    border-radius: 0 8px 8px 0 !important; /* 右侧圆角 */
+    border-left: 1px solid #e5e7eb !important;
+    text-align: center;
+    /* 默认隐藏，由JS控制 display */
+}
+
+/* Tokens 显示：强制右对齐 */
+#enhanced-wb-panel-v6 .wb-token-display {
+    margin-left: auto !important; /* 挤到最右边 */
+    flex-shrink: 0 !important;    /* 禁止被压缩 */
+    min-width: fit-content;
+}
+
+/* 顺序输入框组：紧凑模式 */
+#enhanced-wb-panel-v6 .wb-ctrl-group.order-group {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+#enhanced-wb-panel-v6 .wb-ctrl-group.order-group span {
+    display: none; /* 在极小屏幕下可选择隐藏"顺序"二字，这里保留结构但通过CSS控制 */
+}
+/* 移动端适配：显示"顺序"标签太占地，建议用图标或仅显示输入框 */
+@media (max-width: 400px) {
+    #enhanced-wb-panel-v6 .wb-ctrl-group.order-group span { display: none; }
+}
+
+/* === 专属下拉框滚动条美化 (Light Mode) === */
+
+/* 针对 单选(.wb-gr) 和 多选(.wb-ms) 列表容器 */
+.wb-gr-options-container::-webkit-scrollbar,
+.wb-ms-list::-webkit-scrollbar {
+    width: 4px;  /* 极细的纵向滚动条 */
+    height: 0px; /* 移除底部横向滚动条 */
+    display: block;
+}
+
+/* 滚动条轨道 - 透明 */
+.wb-gr-options-container::-webkit-scrollbar-track,
+.wb-ms-list::-webkit-scrollbar-track {
+    background: transparent;
+    border: none;
+}
+
+/* 滚动条滑块 - 统一配色 */
+.wb-gr-options-container::-webkit-scrollbar-thumb,
+.wb-ms-list::-webkit-scrollbar-thumb {
+    background-color: #E3F2FD; /* 统一常态色 */
+    border-radius: 10px;       /* 圆角 */
+    border: none  !important;              /* 无边框 */
+    transition: background-color 0.2s;
+}
+
+/* 鼠标悬停在滚动条上 */
+.wb-gr-options-container::-webkit-scrollbar-thumb:hover,
+.wb-ms-list::-webkit-scrollbar-thumb:hover {
+    background-color: #BBDEFB; /* 统一悬停色 */
+}
+
+/* 修正多选列表的高度和溢出属性，配合新的滚动条 */
+.wb-ms-list {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden; /* 强制隐藏X轴 */
+    padding: 4px 0;
+}
+
+/* === [新增] 上下文预览：纯净模式 === */
+/* 当 viewer 容器拥有 wb-clean-mode 类时触发 */
+
+/* 隐藏所有条目标题栏 */
+.wb-ctx-viewer-panel.wb-clean-mode .wb-ctx-block-title {
+    display: none !important;
+}
+
+/* 调整分割线和间距 */
+.wb-ctx-viewer-panel.wb-clean-mode .wb-ctx-block {
+    margin-bottom: 20px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid #f3f4f6 !important; /* 虚线变实线，更淡 */
+}
+
+/* 首个条目微调 */
+.wb-ctx-viewer-panel.wb-clean-mode .wb-ctx-block:first-child {
+    padding-top: 10px;
+}
+
+/* === 拖拽排序优化 === */
+.wb-sort-handle {
+    padding: 10px 15px; /* 进一步增大触控区域 */
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none; /* 禁止选中文本 */
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+.wb-sort-handle:active { color: #3b82f6; }
+
+.wb-sort-item.mobile-dragging {
+    /* 移动端拖拽时的样式 - 优化版 */
+    opacity: 1; /* 不透明 */
+    background-color: #ffffff; /* 纯白背景 */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* 更强的阴影营造浮起感 */
+    transform: scale(1.05); /* 稍微放大 */
+    z-index: 9999;
+    position: relative;
+    border: 1px solid #3b82f6; /* 添加蓝色边框提示选中 */
+    /* 关键：禁用指针事件 */
+    pointer-events: none !important;
+    /* 移除 transition 避免拖拽时的延迟感 */
+    transition: none;
+}
+
+.wb-sort-item.pc-dragging {
+    opacity: 0.4;
+    background: #f3f4f6;
+}
+
+/* === 新版导出弹窗样式 === */
+.wb-export-card {
+    background: #ffffff;
+    width: 400px;
+    max-width: 90vw;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.02);
+    border: 1px solid rgba(255,255,255,0.8);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #374151;
+    position: relative;
+}
+.wb-export-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;
+}
+.wb-export-title {
+    font-size: 17px; font-weight: 700; color: #374151; letter-spacing: -0.025em;
+}
+.wb-export-close {
+    cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; color: #9ca3af; transition: all 0.2s; font-size: 18px;
+}
+.wb-export-close:hover { color: rgba(255,0,0,0.8); }
+.wb-export-section { margin-bottom: 24px; }
+.wb-export-section:last-child { margin-bottom: 0; }
+.wb-export-label {
+    font-size: 12px; text-transform: uppercase; color: #9ca3af; font-weight: 600;
+    margin-bottom: 12px; padding-left: 4px; letter-spacing: 0.05em; transition: color 0.3s ease;
+}
+/* Hover 联动效果 */
+.wb-export-section:hover .wb-export-label { color: #3b82f6; }
+.wb-export-grid { display: flex; gap: 12px; }
+.wb-export-btn {
+    flex: 1; border: 1px solid rgba(0,0,0,0.1); background-color: #f9fafb; color: #6b7280;
+    padding: 16px; border-radius: 12px; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center; position: relative; overflow: hidden; white-space: nowrap;
+}
+.wb-export-btn:hover {
+    background-color: #eff6ff; border-color: #bfdbfe; color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08); transform: translateY(-1px);
+}
+.wb-export-btn:active { transform: translateY(0) scale(0.98); background-color: #dbeafe; }
