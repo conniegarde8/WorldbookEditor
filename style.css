@@ -1,3 +1,6 @@
+:root {
+  --wb-sort-group-title-color-1: ;
+}
 /* === 核心：容器样式 === */
 #enhanced-wb-panel-v6 {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -516,7 +519,7 @@ div#wb-active-dropdown input.wb-gr-search-input:focus {
 /* 下拉框 */
 .wb-gr-hidden-select { opacity: 0; pointer-events: none; position: absolute; z-index: -1; }
 #enhanced-wb-panel-v6 .wb-gr-trigger {
-	background-color: #fafafa; */
+	background-color: #fafafa; 
     border: 1.5px solid #f5f5f5;
     color: #333;
     padding: 8px 12px;
@@ -686,7 +689,30 @@ div#wb-active-dropdown input.wb-gr-search-input:focus {
 .wb-legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
 .wb-dot-blue { background-color: #3b82f6; }
 .wb-dot-green { background-color: #22c55e; }
+/* --- 统计文本与进度条 --- */
+[data-theme='dark'] .wb-stats-label { 
+    color: #e5e7eb; /* 主标题变亮白 */
+}
+[data-theme='dark'] .wb-stats-total { 
+    color: #9ca3af; /* 统计总数变浅灰 */
+}
+[data-theme='dark'] .wb-progress-bar { 
+    background: #3f3f46; /* 进度条未填充的底色变深灰 */
+}
+[data-theme='dark'] .wb-bar-legend { 
+    color: #9ca3af; /* 图例文本变浅灰 */
+}
 
+/* 如果你的代码里还有饼图的图例（.wb-pie-legend-item），也顺手加上 */
+[data-theme='dark'] .wb-pie-legend-item {
+    color: #a1a1aa;
+}
+[data-theme='dark'] .wb-pie-legend-item strong {
+    color: #f3f4f6;
+}
+[data-theme='dark'] .wb-pie-sub {
+    color: #6b7280;
+}
 /* 饼图区域 */
 .wb-pie-row { display: flex; align-items: center; justify-content: center; gap: 40px; padding: 10px 0; }
 .wb-pie-chart { width: 140px; height: 140px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: background 0.4s; }
@@ -1522,4 +1548,366 @@ div#wb-active-dropdown input.wb-gr-search-input:focus {
 /* 新增：仅在拥有此类名时才启用动画 */
 #enhanced-wb-panel-v6 .wb-tab-glider.wb-glider-animating {
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================================
+   === 暗色主题补丁 (Dark Theme) [data-theme='dark'] ===
+   ========================================================= */
+
+/* --- 1. 核心容器与全局基础颜色 --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 {
+    background-color: #202020;
+    color: #e5e7eb;
+}
+
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-footer-info {
+    background: rgba(32, 32, 32, 0.95);
+    color: #9ca3af;
+}
+
+/* 滚动条暗化 */
+[data-theme='dark'] #enhanced-wb-panel-v6 ::-webkit-scrollbar-thumb,
+[data-theme='dark'] .wb-modal-overlay ::-webkit-scrollbar-thumb,
+[data-theme='dark'] .wb-sort-modal-overlay ::-webkit-scrollbar-thumb,
+[data-theme='dark'] .wb-gr-dropdown ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 ::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .wb-modal-overlay ::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .wb-sort-modal-overlay ::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .wb-gr-dropdown ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* --- 2. 顶部导航与胶囊菜单 --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-tabs {
+    background: #2b2b2b;
+    border-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-tab {
+    color: #a1a1aa;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-tab:hover {
+    color: #f4f4f5;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-tab.active {
+    color: #18181b; /* 暗色模式下滑块背景变亮，文字变暗 */
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-tab-glider {
+    background: #e5e7eb;
+}
+
+/* --- 3. 输入框与表单控件 --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-input-dark,
+[data-theme='dark'] #enhanced-wb-panel-v6 input[type="text"],
+[data-theme='dark'] #enhanced-wb-panel-v6 input[type="number"],
+[data-theme='dark'] #enhanced-wb-panel-v6 input:not([type]),
+[data-theme='dark'] #enhanced-wb-panel-v6 textarea,
+[data-theme='dark'] .wb-gr-search-input,
+[data-theme='dark'] .wb-content-popup input,
+[data-theme='dark'] .wb-content-popup textarea,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-inp-num,
+[data-theme='dark'] #wb-content-popup-overlay .wb-popup-textarea,
+[data-theme='dark'] #wb-content-popup-overlay .wb-popup-input-keys {
+    background-color: #2b2b2b !important;
+    border-color: #404040 !important;
+    color: #e5e7eb !important;
+    -webkit-text-fill-color: #e5e7eb !important;
+}
+
+[data-theme='dark'] #enhanced-wb-panel-v6 input:focus,
+[data-theme='dark'] #enhanced-wb-panel-v6 textarea:focus,
+[data-theme='dark'] .wb-gr-search-input:focus,
+[data-theme='dark'] #wb-content-popup-overlay .wb-popup-textarea:focus {
+    background-color: #333333 !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 按钮图标与文字控件 */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-inp-title {
+    color: #e5e7eb;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-inp-title:hover,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-inp-title:focus {
+    background: #333333; border-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-btn-circle {
+    background: #2b2b2b; border-color: #404040; color: #d1d5db;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-btn-circle:hover {
+    background: #e5e7eb; color: #18181b; border-color: #e5e7eb;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .btn-preview:hover {
+    color: #ffffff !important;
+}
+
+/* 下拉触发器 */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-gr-trigger {
+    background-color: #2b2b2b; border-color: #404040; color: #e5e7eb;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-gr-trigger:hover {
+    border-color: #6b7280;
+}
+
+/* 开关控件 (Switch) */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-slider { background-color: #4b5563; }
+[data-theme='dark'] #enhanced-wb-panel-v6 input:checked + .wb-slider.purple { background-color: #a855f7; }
+[data-theme='dark'] #enhanced-wb-panel-v6 input:checked + .wb-slider.blue { background-color: #3b82f6; }
+
+/* --- 4. 列表卡片与管理组 --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-bind-card,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-manage-card {
+    background: #2b2b2b; border-color: #404040; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card-header,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-expand-area {
+    background: transparent; border-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-bind-title {
+    color: #f3f4f6; border-bottom-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card-title,
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-group-title {
+    color: #e5e7eb;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-group-header {
+    background: #2b2b2b; border-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-group-header:hover {
+    background: #333333;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-manage-settings {
+    background: #2b2b2b; border-color: #404040;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-setting-label {
+    color: #e5e7eb;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-manage-note {
+    background: #202020; border-color: #404040; color: #d1d5db;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-manage-note:focus {
+    background: #2b2b2b; border-color: #6b7280; color: #f3f4f6;
+}
+
+/* 标签 Tokens 颜色自适应 (透明度背景+亮色字) */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card.type-green .wb-token-display {
+    background-color: rgba(34, 197, 94, 0.15) !important; color: #86efac !important;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card.type-blue .wb-token-display {
+    background-color: rgba(59, 130, 246, 0.15) !important; color: #93c5fd !important;
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-card.disabled .wb-token-display {
+    background-color: #3f3f46 !important; color: #a1a1aa !important;
+}
+
+/* 排行榜 */
+[data-theme='dark'] .wb-rank-pill {
+    background-color: #2b2b2b; color: #d1d5db; border: 1px solid #404040;
+}
+[data-theme='dark'] .wb-rank-pill:hover {
+    background-color: #333333; border-color: #52525b;
+}
+[data-theme='dark'] .wb-rank-pill-val { color: #f3f4f6; }
+
+/* --- 5. 下拉菜单与多选框 --- */
+[data-theme='dark'] .wb-menu-dropdown,
+[data-theme='dark'] .wb-ms-dropdown,
+[data-theme='dark'] .wb-gr-dropdown {
+    background-color: #2b2b2b; border-color: #404040; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+[data-theme='dark'] .wb-gr-search-box {
+    background: linear-gradient(to bottom, #2b2b2b 90%, rgba(43,43,43,0));
+}
+[data-theme='dark'] .wb-menu-item,
+[data-theme='dark'] .wb-gr-option,
+[data-theme='dark'] .wb-ms-item {
+    color: #d1d5db;
+}
+[data-theme='dark'] .wb-menu-item:hover {
+    background: #e5e7eb; color: #18181b;
+}
+[data-theme='dark'] .wb-gr-option:hover,
+[data-theme='dark'] .wb-ms-item:hover {
+    background-color: #3b82f6 !important; color: #ffffff !important; border-left-color: #60a5fa !important;
+}
+
+/* --- 6. 模态弹窗 (Modals) --- */
+[data-theme='dark'] .wb-content-popup,
+[data-theme='dark'] .wb-sort-modal,
+[data-theme='dark'] .wb-export-card {
+    background-color: #2b2b2b !important;
+    border-color: #404040 !important;
+    color: #e5e7eb !important;
+}
+[data-theme='dark'] .wb-popup-header,
+[data-theme='dark'] .wb-export-title {
+    color: #f3f4f6 !important;
+}
+
+/* 排序弹窗 */
+[data-theme='dark'] .wb-sort-header,
+[data-theme='dark'] .wb-sort-footer {
+    background: #2b2b2b; border-color: #404040;
+}
+[data-theme='dark'] .wb-ctx-header-title-text {
+  color: #cad0df;
+}
+[data-theme='dark'] .wb-sort-body {
+    background: #202020;
+}
+[data-theme='dark'] .wb-sort-group-title {
+    background: rgba(43, 43, 43, 0.8); color: #e5e7eb; border-bottom-color: #404040;
+}
+[data-theme='dark'] .wb-sort-item {
+    background: #333333; border-color: #404040; color: #e5e7eb;
+}
+[data-theme='dark'] .wb-sort-item-order {
+    background: #4b5563; color: #f3f4f6;
+}
+
+/* 导出按钮 */
+[data-theme='dark'] .wb-export-btn {
+    background-color: #333333; border-color: #404040; color: #d1d5db;
+}
+[data-theme='dark'] .wb-export-btn:hover {
+    background-color: #3b82f6; border-color: #60a5fa; color: #ffffff;
+}
+
+/* --- 7. 上下文预览 (Context Modal) --- */
+[data-theme='dark'] .wb-ctx-layout-container {
+    background-color: #202020 !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-panel {
+    background-color: #262626 !important; border-right-color: #404040 !important;
+}
+[data-theme='dark'] .wb-ctx-viewer-panel {
+    background-color: #202020 !important; color: #e5e7eb !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-item {
+    color: #a1a1aa !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-item:hover {
+    background-color: #333333 !important; color: #f3f4f6 !important;
+}
+/* 侧边栏类型高亮 (暗色适配) */
+[data-theme='dark'] .wb-ctx-sidebar-item.type-green {
+    background-color: rgba(34, 197, 94, 0.1) !important; color: #86efac !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-item.type-green.active {
+    background-color: rgba(34, 197, 94, 0.2) !important; border-color: #4ade80 !important; color: #bbf7d0 !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-item.type-blue {
+    background-color: rgba(59, 130, 246, 0.1) !important; color: #93c5fd !important;
+}
+[data-theme='dark'] .wb-ctx-sidebar-item.type-blue.active {
+    background-color: rgba(59, 130, 246, 0.2) !important; border-color: #60a5fa !important; color: #bfdbfe !important;
+}
+
+[data-theme='dark'] .wb-ctx-block {
+    border-bottom-color: #404040 !important;
+}
+[data-theme='dark'] .wb-ctx-block-title {
+    color: #9ca3af !important;
+}
+[data-theme='dark'] .wb-ctx-block-content {
+    color: #d1d5db !important;
+}
+[data-theme='dark'] .wb-ctx-search-container {
+    background: #2b2b2b; border-color: #404040;
+}
+[data-theme='dark'] .wb-ctx-search-container:focus-within {
+    border-color: #9ca3af !important; background: #333333;
+}
+[data-theme='dark'] .wb-ctx-search-input {
+    color: #e5e7eb !important;
+}
+
+/* 黑色按钮反转 (在暗色中变成亮白底黑字) */
+[data-theme='dark'] .wb-btn-black,
+[data-theme='dark'] .wb-btn-rect {
+    background-color: #e5e7eb; color: #18181b;
+}
+/* --- 下拉菜单：选中状态 --- */
+[data-theme='dark'] .wb-gr-option.selected { 
+    background-color: rgba(59, 130, 246, 0.2); /* 半透明暗蓝底 */
+    color: #93c5fd; /* 亮蓝字 */
+}
+
+/* --- 绑定管理：复选框选中状态 (紫系) --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-check-item.checked { 
+    background: rgba(139, 92, 246, 0.15); 
+    border-color: #8b5cf6; 
+    color: #c4b5fd; 
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-check-item.checked::before { 
+    background-color: #8b5cf6; 
+    border-color: #8b5cf6; 
+    box-shadow: inset 0 0 0 2px #2b2b2b; /* 中间的白点换成暗色底，防刺眼 */
+}
+
+/* --- 多选框标签 (紫系) --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-tag { 
+    background: rgba(139, 92, 246, 0.15); 
+    color: #c4b5fd; 
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-tag-close { 
+    color: #9ca3af; 
+}
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-tag-close:hover { 
+    color: #f87171; /* 悬停时的红色也要变亮一点 */
+}
+
+/* --- 搜索高亮 (红系) --- */
+[data-theme='dark'] .wb-search-highlight {
+    background-color: rgba(239, 68, 68, 0.2); 
+    color: #f87171;
+    border-bottom-color: #ef4444;
+}
+[data-theme='dark'] .wb-search-highlight.active { 
+    background-color: rgba(239, 68, 68, 0.4); 
+    box-shadow: 0 0 0 2px #ef4444; 
+    color: #fca5a5;
+}
+/* --- 多选框容器与占位符 --- */
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-tags {
+    background: #2b2b2b;       /* 深灰背景，和其他输入框保持一致 */
+    border-color: #404040;     /* 边框变暗 */
+}
+
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-tags:hover {
+    border-color: #6b7280;     /* 悬停时边框变浅一点的灰色，或者你也可以用 #3b82f6 蓝色 */
+}
+
+[data-theme='dark'] #enhanced-wb-panel-v6 .wb-ms-placeholder {
+    color: #6b7280;            /* 占位符文字在暗色下稍微压暗一点，避免喧宾夺主 */
+}
+/* === 主题切换平滑过渡 (防卡顿闪烁) === */
+/* 针对主要容器和面板添加背景、边框、颜色的柔和过渡 */
+#enhanced-wb-panel-v6,
+#enhanced-wb-panel-v6 .wb-content,
+#enhanced-wb-panel-v6 .wb-card,
+#enhanced-wb-panel-v6 .wb-card-header,
+#enhanced-wb-panel-v6 .wb-bind-card,
+#enhanced-wb-panel-v6 .wb-group-header,
+#enhanced-wb-panel-v6 .wb-tabs,
+#enhanced-wb-panel-v6 .wb-tab,
+#enhanced-wb-panel-v6 input,
+#enhanced-wb-panel-v6 textarea,
+.wb-content-popup,
+.wb-sort-modal,
+.wb-sort-header,
+.wb-sort-body,
+.wb-sort-footer,
+.wb-gr-dropdown,
+.wb-menu-dropdown,
+.wb-ctx-sidebar-panel,
+.wb-ctx-viewer-panel {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* 进度条的底色也可以加上过渡 */
+.wb-progress-bar {
+    transition: background-color 0.3s ease;
 }

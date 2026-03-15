@@ -15,7 +15,7 @@ const CONFIG = {
         accent: '#7c5cbd',
     }
 };
-
+const THEME_KEY = 'wb_ctx_theme';
 const STATE = {
     currentView: 'editor', // 'editor' | 'binding' | 'manage'
     currentBookName: null,
@@ -729,7 +729,24 @@ const Actions = {
         const anDepth = (context.chatMetadata?.note_depth) ?? (context.extensionSettings?.note?.defaultDepth) ?? 4;
         toastr.success(`已重新按上下文逻辑重排`);
     },
-
+    
+    applyTheme(theme) {
+      const themeBtn = document.getElementById('btn-wb-menu-theme-toggle');
+      if (theme === 'light') {
+          // 切换到亮色：显示太阳
+          themeBtn.classList.replace('fa-moon', 'fa-sun');
+          document.body.setAttribute('data-theme', 'light');
+      } else {
+          // 切换到暗色：显示月亮
+          themeBtn.classList.replace('fa-sun', 'fa-moon');
+          document.body.setAttribute('data-theme', 'dark');
+      }
+    },
+    switchTheme() {
+      const currentTheme = localStorage.getItem(THEME_KEY) === 'light' ? 'dark' : 'light';
+      Actions.applyTheme(currentTheme);
+      localStorage.setItem(THEME_KEY, currentTheme); // 存入 localStorage
+    },
     async saveBindings() {
         const view = document.getElementById('wb-view-binding');
         const charPrimary = view.querySelector('#wb-bind-char-primary').value;
@@ -1254,6 +1271,11 @@ const UI = {
                                 <div class="wb-menu-item danger" data-action="delete"><i class="fa-solid fa-trash"></i> 删除世界书</div>
                             </div>
                         </div>
+                        <div class="wb-menu-wrapper">
+                            <button class="wb-btn-circle" title="切换主题" id="btn-wb-menu-theme">
+                                <i id="btn-wb-menu-theme-toggle" class="fa-solid fa-moon interactable"></i>
+                            </button>
+                        </div>
                         <input type="file" id="wb-import-file" accept=".json,.wb" style="display:none">
                     </div>
                     <div class="wb-stat-line">
@@ -1321,8 +1343,10 @@ const UI = {
         $('#btn-add-entry').onclick = () => Actions.addNewEntry();
         $('#btn-group-sort').onclick = () => UI.openSortingModal();
         $('#btn-sort-priority').onclick = () => Actions.sortByPriority();
-        
+        $('#btn-wb-menu-theme').onclick = () => Actions.switchTheme();
         // Menus
+        const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+        Actions.applyTheme(savedTheme);
         const analysisBtn = $('#btn-wb-analysis');
         const analysisMenu = $('#wb-analysis-menu');
         analysisBtn.onclick = (e) => {
@@ -2164,9 +2188,23 @@ const UI = {
         // CSS 已经处理好了所有布局，无需 JS 干预
 
         const bodyEl = overlay.querySelector('#wb-sort-body');
-        const getBg = (i) => `hsl(${(i * 137.5) % 360}, 70%, 95%)`;
-        const getBdr = (i) => `hsl(${(i * 137.5) % 360}, 60%, 80%)`;
-        const getTxt = (i) => `hsl(${(i * 137.5) % 360}, 80%, 30%)`;
+        // 获取当前是否为暗色模式的辅助函数
+        const isDark = () => document.body.getAttribute('data-theme') === 'dark';
+
+        // 动态生成背景色
+        const getBg = (i) => isDark() 
+            ? `hsl(${(i * 137.5) % 360}, 20%, 18%)`  // 暗色模式：极低亮度，低饱和度（深色微光背景）
+            : `hsl(${(i * 137.5) % 360}, 70%, 95%)`; // 亮色模式：原逻辑
+
+        // 动态生成边框色
+        const getBdr = (i) => isDark()
+            ? `hsl(${(i * 137.5) % 360}, 40%, 28%)`  // 暗色模式：边框比背景稍微亮一点点
+            : `hsl(${(i * 137.5) % 360}, 60%, 80%)`; // 亮色模式：原逻辑
+
+        // 动态生成文字色
+        const getTxt = (i) => isDark()
+            ? `hsl(${(i * 137.5) % 360}, 80%, 85%)`  // 暗色模式：高亮度，保证在深色背景上的可读性
+            : `hsl(${(i * 137.5) % 360}, 80%, 30%)`; // 亮色模式：原逻辑
 
         groupKeys.forEach((key, i) => {
             const group = groups[key];
@@ -2379,7 +2417,7 @@ const UI = {
         overlay.className = 'wb-sort-modal-overlay';
         overlay.innerHTML = `
             <div class="wb-sort-modal" id="wb-analysis-box" style="width:550px; height:auto; max-height:90vh;">
-                <div class="wb-sort-header" style="background:#fff; padding: 15px 20px;">
+                <div class="wb-sort-header" style=" padding: 15px 20px;">
                     <span style="font-size:1.1em; display:flex; align-items:center; gap:10px;">
                         <i class="fa-solid fa-chart-pie" style="color:#374151;"></i>
                         <span id="wb-analysis-title">${STATE.currentBookName}</span>
@@ -2389,7 +2427,7 @@ const UI = {
                         <div style="cursor:pointer" class="wb-close-modal"><i class="fa-solid fa-xmark"></i></div>
                     </div>
                 </div>
-                <div class="wb-sort-body" style="background:#fff; padding:0; overflow:hidden !important;">
+                <div class="wb-sort-body" style="padding:0; overflow:hidden !important;">
                     <div id="wb-analysis-content" class="wb-stats-container">
                         <!-- 内容将通过 render 动态生成 -->
                     </div>
@@ -2407,7 +2445,7 @@ const UI = {
 
             // 更新标题状态
             const titleEl = overlay.querySelector('#wb-analysis-title');
-            titleEl.innerHTML = `${STATE.currentBookName} <span style="font-size:0.8em; font-weight:normal; color:#6b7280;">(${showAll ? '所有条目' : '仅已启用'})</span>`;
+            titleEl.innerHTML = `${STATE.currentBookName} <span style="font-size:0.8em; font-weight:normal;">(${showAll ? '所有条目' : '仅已启用'})</span>`;
 
             if (targetEntries.length === 0) {
                 overlay.querySelector('#wb-analysis-content').innerHTML = `<div style="text-align:center; color:#9ca3af; padding:40px;">暂无数据</div>`;
@@ -2498,9 +2536,23 @@ const UI = {
             rankList.forEach(item => {
                 // 计算百分比：占总数的比例
                 const percent = totalTokens > 0 ? (item.tokens / totalTokens * 100).toFixed(1) : 0;
-                // 蓝灯浅蓝(#dbeafe)，绿灯浅绿(#dcfce7)
-                const barColor = item.isBlue ? '#dbeafe' : '#dcfce7';
-                const bgStyle = `background: linear-gradient(to right, ${barColor} ${percent}%, #f8fafc ${percent}%);`;
+                
+                // 判断当前是否为暗色模式
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+
+                // 根据模式分配颜色
+                let barColor, trackColor;
+                if (isDark) {
+                    // 暗色模式：带透明度的蓝/绿，以及深灰底色
+                    barColor = item.isBlue ? 'rgba(59, 130, 246, 0.25)' : 'rgba(34, 197, 94, 0.25)';
+                    trackColor = '#2b2b2b'; 
+                } else {
+                    // 亮色模式：原来的浅蓝/浅绿，以及浅灰底色
+                    barColor = item.isBlue ? '#dbeafe' : '#dcfce7';
+                    trackColor = '#f8fafc';
+                }
+
+                const bgStyle = `background: linear-gradient(to right, ${barColor} ${percent}%, ${trackColor} ${percent}%);`;
 
                 rankHtmlItems += `
                     <div class="wb-rank-pill" style="${bgStyle}">
@@ -2562,7 +2614,7 @@ const UI = {
         overlay.innerHTML = `
             <div class="wb-sort-modal" id="wb-warning-box" style="width:500px; height:auto; max-height:80vh; background:#f9fafb;">
                 <!-- 头部 -->
-                <div class="wb-sort-header" style="background:#fff; border-bottom:1px solid #e5e7eb;">
+                <div class="wb-sort-header" >
                     <div class="wb-warning-header-red">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                         <span>关键词缺失警告 (${warnings.length})</span>
@@ -2734,7 +2786,7 @@ const UI = {
 
             overlay.innerHTML = `
                 <div class="wb-sort-modal" style="width:1000px; height:85vh; max-width:95vw; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-                    <div class="wb-sort-header" style="background:#fff; border-bottom:1px solid #e5e7eb; padding:10px 20px; height:60px;">
+                    <div class="wb-sort-header" style="padding:10px 20px; height:60px;">
                         <span style="font-size:1.1em; font-weight:bold; color:#111827; display:flex; align-items:center; gap:15px;">
                             <i class="fa-solid fa-align-left" id="wb-ctx-toggle-sidebar" style="cursor:pointer; color:#6b7280; transition:0.2s" title="切换侧边栏"></i>
                             <!-- [修改] 增加特定类名以便CSS精准控制移动端隐藏逻辑 -->
